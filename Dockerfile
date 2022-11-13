@@ -1,6 +1,6 @@
 # Dockerfile: blueprint for images, Image: Template for container, Container: actual running process
 
-FROM --platform=arm64 python:3.11
+FROM jupyter/minimal-notebook:latest
 
 EXPOSE 8501
 USER root
