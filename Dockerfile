@@ -1,14 +1,22 @@
 # Dockerfile: blueprint for images, Image: Template for container, Container: actual running process
 
-FROM --platform=arm64 python:3.11
+FROM FROM jupyter/scipy-notebook
 
-ADD app.py .
+EXPOSE 8501
 
-COPY ./requirements.txt /var/code/requirements.txt
-WORKDIR /var/code
-RUN pip install -r requirements.txt
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    software-properties-common \
+    cmake \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY ./run.sh /var/code/run.sh
+WORKDIR /app
+RUN git clone https://github.com/ssar0014/python-streamlit-docker-demo.git .
+RUN pip3 install -r requirements.txt
+
+COPY ./run.sh .
 RUN chmod a+x run.sh
 CMD ["./run.sh"]
+ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
 
